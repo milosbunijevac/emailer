@@ -20,6 +20,7 @@ app.get('/', (req, res) => {
 
 app.post('/mailSend', (req, res) => {
   console.log('The body of the axios call is: ', req.body);
+  res.sendStatus(200);
 })
 
 app.get('*', (req, res) => {
