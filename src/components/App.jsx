@@ -13,9 +13,7 @@ class App extends React.Component {
     return (
       <div>
         <div className = "container">
-          <Switch>
-            <Route exact path='/' component={Main} />
-          </Switch>
+          <Main />
         </div>
       </div>
     );
