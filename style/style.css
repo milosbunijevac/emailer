@@ -9,3 +9,8 @@ input.addressField {
 textarea.bodyField {
     margin-top: 1em;
 }
+
+h2.bannerText {
+    text-align: center;
+    margin-bottom: 2em;
+}

@@ -18,9 +18,15 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../src', 'index.html'));
 });
 
+app.post('/mailSend', (req, res) => {
+  console.log('The body of the axios call is: ', req.body);
+})
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../src', 'index.html'));
 });
+
+
 
 app.listen(port, () => {
   console.log('The server is listening on port: ', port);
