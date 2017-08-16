@@ -1,0 +1,11 @@
+.emailFields {
+    margin-top: 5em;
+}
+
+input.addressField {
+    margin-left: 3.1em
+}
+
+textarea.bodyField {
+    margin-top: 1em;
+}
