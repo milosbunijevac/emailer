@@ -3,6 +3,8 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var models = require('./mailfuncs.js');
 
+var helper = require('sendgrid').mail;
+
 var port = process.env.PORT || 3000;
 
 var app = express();
@@ -66,9 +68,26 @@ app.post('/mailSend', (req, res) => {
     },
     Source: req.body.source
   };
+  var fromEmail = new helper.Email(req.body.source);
+  var toEmail = new helper.Email(req.body.to);
+  var subject = req.body.subject;
+  var content = new helper.Content('text/plain', req.body.messageBody)
+  var mail = new helper.Mail(fromEmail, subject, toEmail, content);
+  var request = models.sg.emptyRequest({
+    method: 'POST',
+    path: '/v3/mail/send',
+    body: mail.toJSON()
+  });
+  
   models.emailSend(parameters, (err, data) => {
     if(err){
       console.log('The error occured in the aws mail send call: ', err);
+      models.sendGrid(request, (err, data) => {
+        if(err){
+          console.log('This is the error for SendGrid');
+        }
+        console.log('The SendGrid email has been sent', data);
+      })
     } else {
       console.log('The call got to the index.js: ', data);
       res.sendStatus(200);
