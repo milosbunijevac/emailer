@@ -38,11 +38,47 @@ app.post('/mailSend', (req, res) => {
   if (req.body.messageBody === '') {
     req.body.messageBody = 'No body text has been entered';
   }
-  var parameters = {
-    Destination: {BccAddresses: [req.body.bcc,],CcAddresses: [req.body.cc,],ToAddresses: [req.body.to,]},
-    Message: {Body: {Html: {Data: req.body.messageBody,Charset: 'utf-8'},Text: {Data: req.body.messageBody,Charset: 'utf-8'}},
-      Subject: {Data: req.body.subject,Charset: 'utf-8'}},
-    Source: req.body.source
+  var transmission = {
+    recipients: [
+      {
+        address: {
+          email: req.body.to,
+          name: 'To recipient'
+        },
+        substitution_data: {
+          recipient_type: 'Original'
+        }
+      }
+    ],
+    cc: [
+      {
+        address: {
+          email: req.body.cc,
+        },
+        substitution_data: {
+          recipient_type: 'CC'
+        }
+      }
+    ],
+    bcc: [
+      {
+        address: {
+          email: req.body.bcc,
+        },
+        substitution_data: {
+          recipient_type: 'BCC'
+        }
+      }
+    ],
+    content: {
+      from: {
+        name: req.body.source,
+        email: req.body.source
+      },
+      subject: req.body.subject,
+      text: req.body.messageBody,
+      html: `<p>${req.body.messageBody} is the p formatted version of the messageBody</p>`
+    }
   };
   var fromEmail = new helper.Email(req.body.source);
   var toEmail = new helper.Email(req.body.to);
@@ -55,17 +91,17 @@ app.post('/mailSend', (req, res) => {
     body: mail.toJSON()
   });
   
-  models.emailSend(parameters, (err, data) => { //Tries AWS first
+  models.sparkPost(transmission, (err, data) => {
     if(err){ //If error, it will try SendGrid
-      console.log('The error occured in the aws mail send call: ', err);
+      console.log('The error occured in the sparkpost mail send call: ', err);
       models.sendGrid(request, (err, data) => {
         if(err){
           console.log('This is the error for SendGrid');
         }
         console.log('The SendGrid email has been sent', data);
       })
-    } else {
-      console.log('The call got to the index.js: ', data);
+    } else { //Sent with SparkPost
+      console.log('The SparkPost call got to the index.js: ', data);
       res.sendStatus(200);
     }
   })
