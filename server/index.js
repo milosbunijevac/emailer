@@ -1,7 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
-var models = require('./aws.js');
+var models = require('./mailfuncs.js');
 
 var port = process.env.PORT || 3000;
 
