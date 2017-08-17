@@ -5,7 +5,7 @@ var models = require('./mailfuncs.js');
 
 var helper = require('sendgrid').mail;
 
-var port = process.env.PORT || 3000;
+var PORT = process.env.PORT || 3000;
 
 var app = express();
 
@@ -39,33 +39,9 @@ app.post('/mailSend', (req, res) => {
     req.body.messageBody = 'No body text has been entered';
   }
   var parameters = {
-    Destination: {
-      BccAddresses: [
-        req.body.bcc,
-      ],
-      CcAddresses: [
-        req.body.cc,
-      ],
-      ToAddresses: [
-        req.body.to,
-      ]
-    },
-    Message: {
-      Body: {
-        Html: {
-          Data: req.body.messageBody,
-          Charset: 'utf-8'
-        },
-        Text: {
-          Data: req.body.messageBody,
-          Charset: 'utf-8'
-        }
-      },
-      Subject: {
-        Data: req.body.subject,
-        Charset: 'utf-8'
-      }
-    },
+    Destination: {BccAddresses: [req.body.bcc,],CcAddresses: [req.body.cc,],ToAddresses: [req.body.to,]},
+    Message: {Body: {Html: {Data: req.body.messageBody,Charset: 'utf-8'},Text: {Data: req.body.messageBody,Charset: 'utf-8'}},
+      Subject: {Data: req.body.subject,Charset: 'utf-8'}},
     Source: req.body.source
   };
   var fromEmail = new helper.Email(req.body.source);
@@ -79,8 +55,8 @@ app.post('/mailSend', (req, res) => {
     body: mail.toJSON()
   });
   
-  models.emailSend(parameters, (err, data) => {
-    if(err){
+  models.emailSend(parameters, (err, data) => { //Tries AWS first
+    if(err){ //If error, it will try SendGrid
       console.log('The error occured in the aws mail send call: ', err);
       models.sendGrid(request, (err, data) => {
         if(err){
@@ -100,6 +76,6 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../src', 'index.html'));
 });
 
-app.listen(port, () => {
-  console.log('The server is listening on port: ', port);
+app.listen(PORT, () => {
+  console.log('The server is listening on port: ', PORT);
 }); 
