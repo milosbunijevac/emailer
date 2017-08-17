@@ -16,7 +16,7 @@ class Main extends React.Component {
   mailSubmit(){
     axios({
       method: 'POST',
-      url: '/mailSendAWS',
+      url: '/mailSend',
       data: {to: this.state.recEmail, messageBody: this.state.bodyText, cc: this.state.cc, bcc: this.state.bcc, source: this.state.source, subject: this.state.subject}
     }).then((result) => {
       console.log('The mail was sent to the server successfully');

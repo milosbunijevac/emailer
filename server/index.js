@@ -19,9 +19,23 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../src', 'index.html'));
 });
 
-app.post('/mailSendAWS', (req, res) => {
+app.post('/mailSend', (req, res) => {
   console.log('The body of the axios call is: ', req.body);
-  console.log(req.body.to)
+  if(req.body.bcc === ''){
+    req.body.bcc = req.body.to;
+  } 
+  if (req.body.cc === '') {
+    req.body.cc = req.body.to;
+  } 
+  if (req.body.subject === '') {
+    req.body.subject = 'No subject';
+  }
+  if (req.body.source === '') {
+    req.body.source = req.body.to;
+  }
+  if (req.body.messageBody === '') {
+    req.body.messageBody = 'No body text has been entered';
+  }
   var parameters = {
     Destination: {
       BccAddresses: [
@@ -37,7 +51,7 @@ app.post('/mailSendAWS', (req, res) => {
     Message: {
       Body: {
         Html: {
-          Data: 'sadfdsaf',
+          Data: req.body.messageBody,
           Charset: 'utf-8'
         },
         Text: {
@@ -69,4 +83,4 @@ app.get('*', (req, res) => {
 
 app.listen(port, () => {
   console.log('The server is listening on port: ', port);
-});
+}); 
