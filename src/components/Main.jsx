@@ -8,7 +8,7 @@ import Banner from './Banner.jsx';
 class Main extends React.Component {
   constructor(props){
     super(props);
-    this.state = {recEmail: '', bodyText: ''};
+    this.state = {recEmail: '', cc: '', bcc: '', source: '', subject: '', bodyText: ''};
     this.mailSubmit = this.mailSubmit.bind(this);
     this.updateVal = this.updateVal.bind(this);
   }
@@ -17,7 +17,7 @@ class Main extends React.Component {
     axios({
       method: 'POST',
       url: '/mailSendAWS',
-      data: {email: this.state.recEmail, body: this.state.bodyText}
+      data: {to: this.state.recEmail, messageBody: this.state.bodyText, cc: this.state.cc, bcc: this.state.bcc, source: this.state.source, subject: this.state.subject}
     }).then((result) => {
       console.log('The mail was sent to the server successfully');
     }).catch((error) => {

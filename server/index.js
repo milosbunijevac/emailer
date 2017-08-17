@@ -21,7 +21,37 @@ app.get('/', (req, res) => {
 
 app.post('/mailSendAWS', (req, res) => {
   console.log('The body of the axios call is: ', req.body);
-  var parameters = {};
+  console.log(req.body.to)
+  var parameters = {
+    Destination: {
+      BccAddresses: [
+        req.body.bcc,
+      ],
+      CcAddresses: [
+        req.body.cc,
+      ],
+      ToAddresses: [
+        req.body.to,
+      ]
+    },
+    Message: {
+      Body: {
+        Html: {
+          Data: 'sadfdsaf',
+          Charset: 'utf-8'
+        },
+        Text: {
+          Data: req.body.messageBody,
+          Charset: 'utf-8'
+        }
+      },
+      Subject: {
+        Data: req.body.subject,
+        Charset: 'utf-8'
+      }
+    },
+    Source: req.body.source
+  };
   models.emailSend(parameters, (err, data) => {
     if(err){
       console.log('The error occured in the aws mail send call: ', err);
