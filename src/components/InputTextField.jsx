@@ -9,7 +9,7 @@ class InputTextField extends React.Component {
   render() {
     return (
       <div>
-        <textarea className="bodyField col-md-10" placeholder="Enter information to send..." onChange={this.props.textAreaInput} name="bodyField" rows="20" cols="50">
+        <textarea className="bodyField col-md-10" placeholder="Enter information to send..." onChange={this.props.textAreaInput.bind(this, 'bodyText')} name="bodyField" rows="20" cols="50">
           
         </textarea>
       </div>

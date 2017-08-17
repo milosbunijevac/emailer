@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
+var models = require('./aws.js');
 
 var port = process.env.PORT || 3000;
 
@@ -18,16 +19,23 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../src', 'index.html'));
 });
 
-app.post('/mailSend', (req, res) => {
+app.post('/mailSendAWS', (req, res) => {
   console.log('The body of the axios call is: ', req.body);
-  res.sendStatus(200);
+  var parameters = {};
+  models.emailSend(parameters, (err, data) => {
+    if(err){
+      console.log('The error occured in the aws mail send call: ', err);
+    } else {
+      console.log('The call got to the index.js: ', data);
+      res.sendStatus(200);
+    }
+  })
+  
 })
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../src', 'index.html'));
 });
-
-
 
 app.listen(port, () => {
   console.log('The server is listening on port: ', port);

@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-import EmailField from './EmailField.jsx';
+import EmailFields from './EmailFields.jsx';
 import InputTextField from './InputTextField.jsx';
 import Banner from './Banner.jsx';
 
@@ -9,15 +9,14 @@ class Main extends React.Component {
   constructor(props){
     super(props);
     this.state = {recEmail: '', bodyText: ''};
-    this.emailFieldChange = this.emailFieldChange.bind(this);
-    this.inputTextChange = this.inputTextChange.bind(this);
     this.mailSubmit = this.mailSubmit.bind(this);
+    this.updateVal = this.updateVal.bind(this);
   }
 
   mailSubmit(){
     axios({
       method: 'POST',
-      url: '/mailSend',
+      url: '/mailSendAWS',
       data: {email: this.state.recEmail, body: this.state.bodyText}
     }).then((result) => {
       console.log('The mail was sent to the server successfully');
@@ -26,12 +25,10 @@ class Main extends React.Component {
     })
   }
 
-  emailFieldChange (e) {
-    this.setState({recEmail: e.target.value});
-  }
-
-  inputTextChange (e) {
-    this.setState({bodyText: e.target.value});
+  updateVal(name, event) {
+    var updater = {};
+    updater[name] = event.target.value;
+    this.setState(updater);
   }
 
   render() {
@@ -39,8 +36,8 @@ class Main extends React.Component {
       <div>
         <div className = "emailFields">
           <Banner />
-          <EmailField emailInput={this.emailFieldChange}/>
-          <InputTextField textAreaInput={this.inputTextChange}/>
+          <EmailFields emailInput={this.updateVal}/>
+          <InputTextField textAreaInput={this.updateVal}/>
           <button type="button" className="btn btn-primary" onClick={this.mailSubmit}>Send Mail</button>
         </div>
       </div>
