@@ -1,6 +1,7 @@
 var aws = require('aws-sdk');
 var path = require('path');
-var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
+var api = require('../sendgrid.js');
+var sg = require('sendgrid')(api.SG_API_KEY);
 
 aws.config.loadFromPath(path.join(__dirname, '../awsconfig.json'));
 
@@ -17,12 +18,12 @@ exports.emailSend = (params, cb) => {
 }
 
 exports.sendGrid = (params, cb) => {
-  sg.API(request, (error, response) => {
+  sg.API(params, (error, response) => {
     if (error) {
-      console.log('Error response received');
+      cb(error, null);
     }
-    console.log(response.statusCode);
-    console.log(response.body);
-    console.log(response.headers);
+    cb(null, response);
   });
 }
+
+exports.sg = sg;
