@@ -8,3 +8,5 @@ Each recipient gets an object that contains one address. The object is in the ov
   Input handling: check how to make sure input is email (from html side?)
 
 Take the inputs from req.body and check how many of each there are. make an array of objects with each "bcc, cc, to". The function arrayMaker will do this.
+
+Now I should most likely remove the source field input and just default send from MB85Photograhy@mb85.net.

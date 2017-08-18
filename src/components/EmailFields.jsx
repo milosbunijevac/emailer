@@ -25,11 +25,6 @@ class EmailFields extends React.Component {
         </div>
 
         <div className = "row">
-          <h4 className = "col-md-1">Source: </h4>
-          <input className = "addressField col-md-8" placeholder = "Source email address..." onChange={this.props.emailInput.bind(this, 'source')}></input>
-        </div>
-
-        <div className = "row">
           <h4 className = "col-md-1">Subject: </h4>
           <input className = "addressField col-md-8" placeholder = "Enter Subject..." onChange={this.props.emailInput.bind(this, 'subject')}></input>
         </div>

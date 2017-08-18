@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 
 app.post('/mailSend', (req, res) => {
   console.log('The body of the axios call is: ', req.body);
-  // console.log(req.body.to.split(',')[0].replace(/ /g,''));
+  req.body.source = 'MB85Photography@mb85.net';
   function arrayMaker (rbody, type) {
     var tonum = req.body[type].split(',');
     if(type === 'to') {
@@ -38,10 +38,23 @@ app.post('/mailSend', (req, res) => {
   var recipients1 = arrayMaker(req.body, 'to');
   var ccs = arrayMaker(req.body, 'cc');
   var bccs = arrayMaker(req.body, 'bcc');
+  // var transmission = {
+  //   recipients: recipients1,
+  //   cc: ccs,
+  //   bcc: bccs,
+  //   content: {
+  //     from: {
+  //       name: req.body.source,
+  //       email: req.body.source
+  //     },
+  //     subject: req.body.subject,
+  //     text: req.body.messageBody,
+  //     html: `<p></p>`
+  //   }
+  // };
+
   var transmission = {
     recipients: recipients1,
-    cc: ccs,
-    bcc: bccs,
     content: {
       from: {
         name: req.body.source,
@@ -52,6 +65,17 @@ app.post('/mailSend', (req, res) => {
       html: `<p></p>`
     }
   };
+  (console.log('ccs length: ', ccs.length));
+  console.log('transmission before: ', transmission);
+  if(ccs.length > 1){
+    transmission['cc'] = ccs;
+  }
+  if(bccs.length > 1){
+    transmission['bcc'] = bccs;
+  }
+  console.log('transmission after: ', transmission);
+
+
 
   var fromEmail = new helper.Email(req.body.source);
   var toEmail = new helper.Email(req.body.to);
