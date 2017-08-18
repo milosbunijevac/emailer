@@ -2,6 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
 var models = require('./mailfuncs.js');
+var _ = require('lodash');
 
 var helper = require('sendgrid').mail;
 
@@ -23,53 +24,24 @@ app.get('/', (req, res) => {
 
 app.post('/mailSend', (req, res) => {
   console.log('The body of the axios call is: ', req.body);
-  if(req.body.bcc === ''){
-    req.body.bcc = req.body.to;
-  } 
-  if (req.body.cc === '') {
-    req.body.cc = req.body.to;
-  } 
-  if (req.body.subject === '') {
-    req.body.subject = 'No subject';
+  // console.log(req.body.to.split(',')[0].replace(/ /g,''));
+  function arrayMaker (rbody, type) {
+    var tonum = req.body[type].split(',');
+    if(type === 'to') {
+      type = 'Original';
+    }
+    var recips = tonum.map((value) => {
+      return {address: {email: value.replace(/ /g,''),name: type + ' recipient'},substitution_data: {recipient_type: type}}
+    })
+    return recips;
   }
-  if (req.body.source === '') {
-    req.body.source = req.body.to;
-  }
-  if (req.body.messageBody === '') {
-    req.body.messageBody = 'No body text has been entered';
-  }
+  var recipients1 = arrayMaker(req.body, 'to');
+  var ccs = arrayMaker(req.body, 'cc');
+  var bccs = arrayMaker(req.body, 'bcc');
   var transmission = {
-    recipients: [
-      {
-        address: {
-          email: req.body.to,
-          name: 'To recipient'
-        },
-        substitution_data: {
-          recipient_type: 'Original'
-        }
-      }
-    ],
-    cc: [
-      {
-        address: {
-          email: req.body.cc,
-        },
-        substitution_data: {
-          recipient_type: 'CC'
-        }
-      }
-    ],
-    bcc: [
-      {
-        address: {
-          email: req.body.bcc,
-        },
-        substitution_data: {
-          recipient_type: 'BCC'
-        }
-      }
-    ],
+    recipients: recipients1,
+    cc: ccs,
+    bcc: bccs,
     content: {
       from: {
         name: req.body.source,
@@ -77,9 +49,10 @@ app.post('/mailSend', (req, res) => {
       },
       subject: req.body.subject,
       text: req.body.messageBody,
-      html: `<p>${req.body.messageBody} is the p formatted version of the messageBody</p>`
+      html: `<p></p>`
     }
   };
+
   var fromEmail = new helper.Email(req.body.source);
   var toEmail = new helper.Email(req.body.to);
   var subject = req.body.subject;

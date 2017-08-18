@@ -28,6 +28,7 @@
         "babel-preset-stage-1": "^6.24.1",
         "body-parser": "^1.17.2",
         "express": "^4.15.4",
+        "lodash": "^4.17.4",
         "nodemon": "^1.11.0",
         "path": "^0.12.7",
         "react": "^15.6.1",
