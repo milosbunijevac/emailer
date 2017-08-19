@@ -9,9 +9,10 @@ class EmailFields extends React.Component {
     return (
       <div>
 
+        <h6 className = "inputWarn">Enter multiple email address seperated by a comma.</h6>
         <div className = "row">
           <h4 className = "col-md-1">To: </h4> 
-          <input className = "addressField col-md-8" placeholder = "Enter recipients email..." onChange={this.props.emailInput.bind(this, 'recEmail')}></input>
+          <input className = "addressField col-md-8" placeholder = "Enter recipients email..." type="email" required onChange={this.props.emailInput.bind(this, 'recEmail')}></input>
         </div>
 
         <div className = "row">

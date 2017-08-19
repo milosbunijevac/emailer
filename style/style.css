@@ -14,3 +14,7 @@ h2.bannerText {
     text-align: center;
     margin-bottom: 2em;
 }
+
+h6.inputWarn {
+    text-align: center;
+}

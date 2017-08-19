@@ -3,8 +3,8 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var models = require('./mailfuncs.js');
 var _ = require('lodash');
-
-var helper = require('sendgrid').mail;
+var apiSG = require('../sendgrid.js');
+var sg = require('sendgrid')(apiSG.SG_API_KEY);
 
 var PORT = process.env.PORT || 3000;
 
@@ -31,27 +31,14 @@ app.post('/mailSend', (req, res) => {
       type = 'Original';
     }
     var recips = tonum.map((value) => {
-      return {address: {email: value.replace(/ /g,''),name: type + ' recipient'},substitution_data: {recipient_type: type}}
+      console.log('tonum: ', tonum);
+      return {address: {email: value.replace(/ /g,''),name: value.replace(/ /g,'')},substitution_data: {recipient_type: type}}
     })
     return recips;
   }
   var recipients1 = arrayMaker(req.body, 'to');
   var ccs = arrayMaker(req.body, 'cc');
   var bccs = arrayMaker(req.body, 'bcc');
-  // var transmission = {
-  //   recipients: recipients1,
-  //   cc: ccs,
-  //   bcc: bccs,
-  //   content: {
-  //     from: {
-  //       name: req.body.source,
-  //       email: req.body.source
-  //     },
-  //     subject: req.body.subject,
-  //     text: req.body.messageBody,
-  //     html: `<p></p>`
-  //   }
-  // };
 
   var transmission = {
     recipients: recipients1,
@@ -65,38 +52,76 @@ app.post('/mailSend', (req, res) => {
       html: `<p></p>`
     }
   };
-  (console.log('ccs length: ', ccs.length));
-  console.log('transmission before: ', transmission);
-  if(ccs.length > 1){
+
+
+  if(ccs[0].address.email !== ''){
     transmission['cc'] = ccs;
   }
-  if(bccs.length > 1){
+  if(bccs[0].address.email !== ''){
     transmission['bcc'] = bccs;
   }
-  console.log('transmission after: ', transmission);
+
+  function sendInfo() {
+    
+    function arrayMaker (rbody, type) {
+      var tonum = req.body[type].split(',');
+      var recips = tonum.map((value) => {
+        return {email: value}
+      })
+      console.log('this is the recips: ', recips);
+      return recips;
+    }
+
+    var to1 = arrayMaker(req.body, 'to')
+    var cc1 = arrayMaker(req.body, 'cc')
+    var bcc1 = arrayMaker(req.body, 'bcc')
 
 
+    var request = sg.emptyRequest({
+      method: 'POST',
+      path: '/v3/mail/send',
+      body: {
+        personalizations: [
+          {
+            to: to1,
+            cc: cc1,
+            bcc: bcc1,
+            subject: req.body.subject
+          }
+        ],
+        from: {
+          email: 'MB85Photography@mb85.net'
+        },
+        content: [
+          {
+            type: 'text/plain',
+            value: req.body.messageBody
+          }
+        ]
+      }
+    });
+    return request
+  }
 
-  var fromEmail = new helper.Email(req.body.source);
-  var toEmail = new helper.Email(req.body.to);
-  var subject = req.body.subject;
-  var content = new helper.Content('text/plain', req.body.messageBody)
-  var mail = new helper.Mail(fromEmail, subject, toEmail, content);
-  var request = models.sg.emptyRequest({
-    method: 'POST',
-    path: '/v3/mail/send',
-    body: mail.toJSON()
-  });
+  function sendGrid(toSend) {
+
+    console.log('got to sendGrid');
+
+    sg.API(sendInfo(), (error, response) => {
+      if(error){
+        console.log(error);
+      }
+      console.log(response.statusCode);
+      console.log(response.body);
+      console.log(response.headers);
+    })
+  }
   
   models.sparkPost(transmission, (err, data) => {
     if(err){ //If error, it will try SendGrid
       console.log('The error occured in the sparkpost mail send call: ', err);
-      models.sendGrid(request, (err, data) => {
-        if(err){
-          console.log('This is the error for SendGrid');
-        }
-        console.log('The SendGrid email has been sent', data);
-      })
+      console.log('Using SendGrid instead')
+      sendGrid(sendInfo())
     } else { //Sent with SparkPost
       console.log('The SparkPost call got to the index.js: ', data);
       res.sendStatus(200);
