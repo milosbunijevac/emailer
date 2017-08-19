@@ -28,6 +28,7 @@
         "babel-preset-stage-1": "^6.24.1",
         "body-parser": "^1.17.2",
         "express": "^4.15.4",
+        "lodash": "^4.17.4",
         "nodemon": "^1.11.0",
         "path": "^0.12.7",
         "react": "^15.6.1",
@@ -36,6 +37,7 @@
         "react-router-dom": "^4.1.2",
         "sendgrid": "^5.2.2",
         "sendgrid-rest": "^2.4.0",
+        "sparkpost": "^2.1.2",
         "webpack": "^3.5.5",
         "webpack-dev-server": "^2.7.1"
     }
