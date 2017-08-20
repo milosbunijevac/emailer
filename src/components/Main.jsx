@@ -46,7 +46,7 @@ class Main extends React.Component {
 
     console.log('final value of email validation: ', validEmailBool);
 
-    if(validEmailBool) {
+    if(validEmailBool & this.state.recEmail !== '') {
       axios({
         method: 'POST',
         url: '/mailSend',
