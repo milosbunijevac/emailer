@@ -71,11 +71,13 @@ class Main extends React.Component {
   render() {
     return (
       <div>
-        <div className = "emailFields">
+        <div>
           <Banner />
+          <div className = "inputButtonAll">
           <EmailFields emailInput={this.updateVal}/>
           <InputTextField textAreaInput={this.updateVal}/>
-          <button type="button" className="btn btn-primary" onClick={this.mailSubmit}>Send Mail</button>
+          <button type="button" className="btn btn-primary btnCust" onClick={this.mailSubmit}>Send Mail</button>
+          </div>
         </div>
       </div>
     );
