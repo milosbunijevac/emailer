@@ -39,8 +39,6 @@ class Main extends React.Component {
     })
 
     var validEmailBool = emailsFilter.every((currentValue) => {
-      // Pulls subject too
-      console.log('current val of validation: ', validator.validate(currentValue));
       return validator.validate(currentValue);
     })
 
