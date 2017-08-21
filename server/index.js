@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/mailSend', (req, res) => {
-  console.log('The body of the axios call is: ', req.body);
+ 
   req.body.source = 'MB85Photography@mb85.net';
   function arrayMaker (rbody, type) {
     var tonum = req.body[type].split(',');
@@ -31,7 +31,6 @@ app.post('/mailSend', (req, res) => {
       type = 'Original';
     }
     var recips = tonum.map((value) => {
-      console.log('tonum: ', tonum);
       return {address: {email: value.replace(/ /g,''),name: value.replace(/ /g,'')},substitution_data: {recipient_type: type}}
     })
     return recips;
@@ -49,10 +48,9 @@ app.post('/mailSend', (req, res) => {
       },
       subject: req.body.subject,
       text: req.body.messageBody,
-      html: `<p></p>`
+      html: req.body.messageBody
     }
   };
-
 
   if(ccs[0].address.email !== ''){
     transmission['cc'] = ccs;
@@ -68,14 +66,12 @@ app.post('/mailSend', (req, res) => {
       var recips = tonum.map((value) => {
         return {email: value}
       })
-      console.log('this is the recips: ', recips);
       return recips;
     }
 
     var to1 = arrayMaker(req.body, 'to')
     var cc1 = arrayMaker(req.body, 'cc')
     var bcc1 = arrayMaker(req.body, 'bcc')
-
 
     var request = sg.emptyRequest({
       method: 'POST',
@@ -84,8 +80,6 @@ app.post('/mailSend', (req, res) => {
         personalizations: [
           {
             to: to1,
-            cc: cc1,
-            bcc: bcc1,
             subject: req.body.subject
           }
         ],
@@ -100,12 +94,19 @@ app.post('/mailSend', (req, res) => {
         ]
       }
     });
+
+    if(cc1[0].email !== ''){
+      request.body.personalizations[0]['cc'] = cc1
+    }
+
+    if(bcc1[0].email !== ''){
+      request.body.personalizations[0]['bcc'] = bcc1
+    }
+
     return request
   }
 
   function sendGrid(toSend) {
-
-    console.log('got to sendGrid');
 
     sg.API(sendInfo(), (error, response) => {
       if(error){
@@ -114,6 +115,7 @@ app.post('/mailSend', (req, res) => {
       console.log(response.statusCode);
       console.log(response.body);
       console.log(response.headers);
+      res.sendStatus(200);
     })
   }
   

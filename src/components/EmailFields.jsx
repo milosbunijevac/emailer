@@ -7,7 +7,7 @@ class EmailFields extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className = "inputFields">
 
         <h6 className = "inputWarn">Enter multiple email address seperated by a comma.</h6>
         <div className = "row">

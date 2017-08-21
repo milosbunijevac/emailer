@@ -7,7 +7,7 @@ class Banner extends React.Component {
 
   render() {
     return(
-      <div>
+      <div className = "container-fluid banner">
         <h2 className="bannerText"> The Milos email service. </h2>
       </div>
     )

@@ -3,18 +3,52 @@
 }
 
 input.addressField {
-    margin-left: 3.1em
+    margin: 0 auto;
 }
 
 textarea.bodyField {
     margin-top: 1em;
+    margin: 0 auto;
+    display: block;
 }
 
 h2.bannerText {
     text-align: center;
-    margin-bottom: 2em;
+}
+
+.banner {
+    background-color: darkgrey;
+    margin-bottom: 3em;
+    padding-top: 3em;
+    padding-bottom: 3em;
 }
 
 h6.inputWarn {
     text-align: center;
+}
+
+.inputFields {
+    background-color: whitesmoke;
+    margin-top: -3em;
+}
+
+.bodyTextField {
+    background-color: whitesmoke;
+}
+
+.inputButtonAll {
+    background-color: whitesmoke;
+    display: block;
+    min-height: 820px;
+}
+
+button.btn.btn-primary.btnCust {
+    margin: 0 auto;
+    display: block;
+}
+
+h4.col-md-1 {
+    margin: 0 auto;
+    padding-left: 30px;
+    padding-right: 0px;
 }

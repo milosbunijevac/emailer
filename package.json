@@ -27,6 +27,7 @@
         "babel-preset-react": "^6.24.1",
         "babel-preset-stage-1": "^6.24.1",
         "body-parser": "^1.17.2",
+        "email-validator": "^1.1.1",
         "express": "^4.15.4",
         "lodash": "^4.17.4",
         "nodemon": "^1.11.0",
